@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SPOTME | Photographer Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../shared/styles/base.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <nav class="spotme-navbar">
+      <a href="#dashboard" class="spotme-navbar-brand">
+        <span class="spotme-brand-bubble">SM</span>
+        <div class="spotme-navbar-title">
+          <span>SPOTME</span>
+          <span>Photographer Portal</span>
+        </div>
+      </a>
+      <div class="spotme-navbar-actions">
+        <button class="spotme-button" id="logout-btn">Logout</button>
+      </div>
+    </nav>
+    <div class="spotme-app" id="main-app">
+      <aside class="spotme-sidebar">
+        <div class="spotme-brand">
+          <span class="spotme-brand-bubble">SM</span>
+          <div class="spotme-brand-text">
+            <span>SPOTME</span>
+            <span>Photographer</span>
+          </div>
+        </div>
+        <div>
+          <div class="spotme-section-label">Workflows</div>
+          <nav class="spotme-nav">
+            <button class="active" data-target="capture-queue">
+              <span>📥</span>
+              <span>Capture Queue</span>
+            </button>
+            <button data-target="upload-center">
+              <span>⬆️</span>
+              <span>Upload Center</span>
+            </button>
+            <button data-target="face-groups">
+              <span>🧑‍🤝‍🧑</span>
+              <span>Face Groups</span>
+            </button>
+            <button data-target="host-visibility">
+              <span>👁️</span>
+              <span>Host Visibility</span>
+            </button>
+          </nav>
+        </div>
+        <div class="spotme-pill">Pro Tools</div>
+      </aside>
+
+      <main class="spotme-content">
+        <header class="spotme-header">
+          <h1>Centralize Every Shot and Reel</h1>
+          <div class="spotme-actions">
+            <button class="spotme-button">Sync Lightroom</button>
+            <button class="spotme-button primary">Live Upload</button>
+          </div>
+        </header>
+
+        <section id="capture-queue" class="portal-section">
+          <div class="spotme-section-label">Pending Imports</div>
+          <div class="capture-grid" id="capture-grid"></div>
+        </section>
+
+        <section id="upload-center" class="portal-section">
+          <div class="spotme-section-label">Bulk Uploads</div>
+          <div class="spotme-upload-dropzone" id="photographer-dropzone">
+            <input type="file" accept="image/*,video/*" multiple hidden />
+            <div class="spotme-avatar">🎞️</div>
+            <p>Drop RAWs, JPEGs, or MP4s. Unlimited size with auto-sync.</p>
+            <span class="spotme-card-date">Grouping begins immediately after upload.</span>
+          </div>
+          <div class="spotme-progress">
+            <div class="spotme-progress-bar"></div>
+          </div>
+          <div class="spotme-gallery" id="photographer-gallery"></div>
+        </section>
+
+        <section id="face-groups" class="portal-section">
+          <div class="spotme-section-label">Grouped by Faces</div>
+          <div class="group-grid" id="face-group-grid"></div>
+        </section>
+
+        <section id="host-visibility" class="portal-section">
+          <div class="spotme-section-label">Host View</div>
+          <div class="spotme-table-wrapper">
+            <table class="spotme-table" id="host-table">
+              <thead>
+                <tr>
+                  <th>Group</th>
+                  <th>Assets</th>
+                  <th>Status</th>
+                  <th>Assigned Host</th>
+                  <th>Last Updated</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+    <footer class="spotme-footer">
+      <p>&copy; 2025 SPOTME. Professional photography tools.</p>
+    </footer>
+
+    <!-- Login Page -->
+    <div id="login-page" class="login-container">
+      <div class="login-card">
+        <div class="spotme-brand" style="margin-bottom: 2rem;">
+          <span class="spotme-brand-bubble">SM</span>
+          <div class="spotme-brand-text">
+            <span>SPOTME</span>
+            <span>Photographer Login</span>
+          </div>
+        </div>
+        <h2>Photographer Access</h2>
+        <p class="spotme-card-date">Enter your event credentials to access the upload center.</p>
+        <label>
+          Event ID
+          <input type="text" id="photographer-event-id" placeholder="e.g. WEDDING-2025" />
+        </label>
+        <label>
+          Photographer Code
+          <input type="password" id="photographer-code" placeholder="Enter your access code" />
+        </label>
+        <button class="spotme-button primary" id="photographer-login-btn">Login</button>
+      </div>
+    </div>
+
+    <script type="module" src="../shared/scripts/core.js"></script>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
+

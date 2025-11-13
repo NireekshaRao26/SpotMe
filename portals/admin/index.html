@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SPOTME | Admin Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../shared/styles/base.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <nav class="spotme-navbar">
+      <a href="#admin-overview" class="spotme-navbar-brand">
+        <span class="spotme-brand-bubble">SM</span>
+        <div class="spotme-navbar-title">
+          <span>SPOTME</span>
+          <span>Admin Portal</span>
+        </div>
+      </a>
+      <div class="spotme-navbar-actions">
+        <button class="spotme-button" id="logout-btn">Logout</button>
+      </div>
+    </nav>
+    <div class="spotme-app" id="main-app">
+      <aside class="spotme-sidebar">
+        <div class="spotme-brand">
+          <span class="spotme-brand-bubble">SM</span>
+          <div class="spotme-brand-text">
+            <span>SPOTME</span>
+            <span>Admin Portal</span>
+          </div>
+        </div>
+        <div>
+          <div class="spotme-section-label">System Panels</div>
+          <nav class="spotme-nav">
+            <button class="active" data-target="admin-overview">
+              <span>🛰️</span>
+              <span>Overview</span>
+            </button>
+            <button data-target="admin-management">
+              <span>👥</span>
+              <span>Management</span>
+            </button>
+            <button data-target="admin-events">
+              <span>🎟️</span>
+              <span>Events</span>
+            </button>
+            <button data-target="admin-ops">
+              <span>🧭</span>
+              <span>Operations</span>
+            </button>
+          </nav>
+        </div>
+        <div class="spotme-pill">Platform Control</div>
+      </aside>
+
+      <main class="spotme-content">
+        <header class="spotme-header">
+          <h1>Monitor the Entire SPOTME Universe</h1>
+          <div class="spotme-actions">
+            <button class="spotme-button">Generate Audit Log</button>
+            <button class="spotme-button primary">Create Event</button>
+          </div>
+        </header>
+
+        <section id="admin-overview" class="portal-section">
+          <div class="spotme-section-label">Health Snapshot</div>
+          <div id="admin-metrics"></div>
+          <div class="system-health">
+            <article class="health-card">
+              <h3>System Health</h3>
+              <ul id="health-signals"></ul>
+            </article>
+            <article class="health-card">
+              <h3>Recent Alerts</h3>
+              <ul id="alert-feed"></ul>
+            </article>
+          </div>
+        </section>
+
+        <section id="admin-management" class="portal-section">
+          <div class="spotme-section-label">Manage People</div>
+          <div class="management-grid">
+            <article class="management-card">
+              <header>
+                <h3>Users</h3>
+                <span class="spotme-chip">673</span>
+              </header>
+              <p>Control attendee accounts, limit uploads, monitor lookups.</p>
+              <button class="spotme-button primary">Open Console</button>
+            </article>
+            <article class="management-card">
+              <header>
+                <h3>Photographers</h3>
+                <span class="spotme-chip">26</span>
+              </header>
+              <p>Provision credentials, manage equipment sync, set permissions.</p>
+              <button class="spotme-button">Manage Teams</button>
+            </article>
+            <article class="management-card">
+              <header>
+                <h3>Hosts</h3>
+                <span class="spotme-chip">12</span>
+              </header>
+              <p>Assign events, configure dashboards, and manage branding.</p>
+              <button class="spotme-button">Configure Hosts</button>
+            </article>
+          </div>
+        </section>
+
+        <section id="admin-events" class="portal-section">
+          <div class="spotme-section-label">Event Control</div>
+          <div class="spotme-table-wrapper">
+            <table class="spotme-table" id="event-table">
+              <thead>
+                <tr>
+                  <th>Event</th>
+                  <th>Type</th>
+                  <th>Date</th>
+                  <th>Media</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="admin-ops" class="portal-section">
+          <div class="spotme-section-label">Operations</div>
+          <div class="ops-grid">
+            <article class="ops-card">
+              <h3>Realtime Uploads</h3>
+              <p>Monitor ingest queues across regions. Auto-balance tasks.</p>
+              <div class="spotme-progress">
+                <div class="spotme-progress-bar" style="width: 62%"></div>
+              </div>
+            </article>
+            <article class="ops-card">
+              <h3>Processing Pipeline</h3>
+              <p>Face clustering running at 78% capacity. ETA ~4m per 100 images.</p>
+              <button class="spotme-button">View Pipeline</button>
+            </article>
+            <article class="ops-card">
+              <h3>Logs & Alerts</h3>
+              <p>Track API requests, moderation flags, and queue depths.</p>
+              <button class="spotme-button primary">Open Logs</button>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+    <footer class="spotme-footer">
+      <p>&copy; 2025 SPOTME. System administration.</p>
+    </footer>
+
+    <!-- Login Page -->
+    <div id="login-page" class="login-container">
+      <div class="login-card">
+        <div class="spotme-brand" style="margin-bottom: 2rem;">
+          <span class="spotme-brand-bubble">SM</span>
+          <div class="spotme-brand-text">
+            <span>SPOTME</span>
+            <span>Admin Login</span>
+          </div>
+        </div>
+        <h2>Admin Access</h2>
+        <p class="spotme-card-date">Enter your admin credentials to access the system.</p>
+        <label>
+          Admin Username
+          <input type="text" id="admin-username" placeholder="Enter username" />
+        </label>
+        <label>
+          Admin Password
+          <input type="password" id="admin-password" placeholder="Enter password" />
+        </label>
+        <button class="spotme-button primary" id="admin-login-btn">Login</button>
+      </div>
+    </div>
+
+    <script type="module" src="../shared/scripts/core.js"></script>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
+
