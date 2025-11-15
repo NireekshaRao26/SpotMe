@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar: React.FC = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -10,19 +10,24 @@ const Navbar = () => {
     navigate("/login");
   };
 
-  const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role");
+  const token: string | null = localStorage.getItem("token");
+  const role: string | null = localStorage.getItem("role");
 
   return (
     <nav className="flex justify-between items-center px-6 py-4 bg-black text-white shadow-md">
-      <Link to="/" className="text-2xl font-semibold">SpotMe</Link>
+      <Link to="/" className="text-2xl font-semibold">
+        SpotMe
+      </Link>
 
       <div className="flex gap-6 items-center">
-
         {!token ? (
           <>
-            <Link to="/login" className="hover:text-gray-300">Login</Link>
-            <Link to="/signup" className="hover:text-gray-300">Signup</Link>
+            <Link to="/login" className="hover:text-gray-300">
+              Login
+            </Link>
+            <Link to="/signup" className="hover:text-gray-300">
+              Signup
+            </Link>
           </>
         ) : (
           <>
@@ -52,7 +57,6 @@ const Navbar = () => {
             </button>
           </>
         )}
-
       </div>
     </nav>
   );

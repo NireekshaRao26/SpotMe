@@ -1,6 +1,17 @@
 import React from "react";
 
-const EventCard = ({ event, onClick }) => {
+interface Event {
+  name: string;
+  event_code: string;
+  created_at: string; // ISO date string
+}
+
+interface EventCardProps {
+  event: Event;
+  onClick: () => void;
+}
+
+const EventCard: React.FC<EventCardProps> = ({ event, onClick }) => {
   return (
     <div
       onClick={onClick}
