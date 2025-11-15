@@ -1,27 +1,35 @@
-from .qdrant_client import client, collection_name
-from qdrant_client.models import Filter, FieldCondition, MatchValue
 
-def search_similar_faces(query_embeddings, event_name, top_k=5):
-    results = []
-    event_filter = Filter(
-        must=[FieldCondition(key="event_name", match=MatchValue(value=event_name))]
-    )
+from .qdrant_client import client, COLLECTION
 
-    for emb in query_embeddings:
-        search_result = client.search(
-            collection_name=collection_name,
-            query_vector=emb,
+
+MIN_SCORE = 0.35  
+
+def search_similar_faces(embeddings, event_code: str, top_k: int = 10):
+    all_results = []
+
+    for vector in embeddings:
+        res = client.search(
+            collection_name=COLLECTION,
+            query_vector=vector,
             limit=top_k,
-            query_filter=event_filter
-        )
-        matches = [
-            {
-                "score": r.score,
-                "image_name": r.payload.get("image_name"),
-                "event_name": r.payload.get("event_name"),
-                "face_index": r.payload.get("face_index")
+            query_filter={
+                "must": [{"key": "event_code", "match": {"value": event_code}}]
             }
-            for r in search_result
-        ]
-        results.append(matches)
-    return results
+        )
+
+        matches = []
+        for hit in res:
+            score = float(hit.score)
+            if score < MIN_SCORE:  
+                continue
+            payload = hit.payload
+            matches.append({
+                "score": score,
+                "image_name": payload.get("image_name"),
+                "event_code": payload.get("event_code"),
+                "face_index": payload.get("face_index")
+            })
+
+        all_results.append(matches)
+
+    return all_results
