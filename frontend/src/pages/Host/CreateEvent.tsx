@@ -1,5 +1,5 @@
-import { useState } from "react";
-import api from "../../api/axios";
+import React, { useState } from "react";
+import { api } from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 
 const CreateEvent = () => {
@@ -14,11 +14,10 @@ const CreateEvent = () => {
     setError("");
 
     try {
-      const res = await api.post("/host/create-event", { name });
+      await api.post("/host/create-event", { name });
 
       alert("Event created successfully!");
       navigate("/host/events");
-
     } catch (err: any) {
       setError(err.response?.data?.detail || "Event creation failed");
     }

@@ -1,70 +1,62 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../api/axios";
-
-type Role = "participant" | "photographer" | "host";
+import { loginUser } from "../../api/endpoints";
+import { setAuthToken } from "../../api/axios";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [role, setRole] = useState<Role>("participant");
-  const [error, setError] = useState<string>("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: any) => {
     e.preventDefault();
 
     try {
-      const res = await api.post("/auth/login", { email, password, role });
+      const res = await loginUser({ username, password });
 
-      localStorage.setItem("token", res.data.access_token);
+      const token = res.data.access_token;
+      const role = res.data.role; // backend should send this
+
+      setAuthToken(token);
+      localStorage.setItem("token", token);
       localStorage.setItem("role", role);
 
-      if (role === "host") navigate("/host/dashboard");
-      else if (role === "photographer") navigate("/photographer/upload");
-      else navigate("/participant/search");
-
+      if (role === "host") navigate("/host");
+      else if (role === "photographer") navigate("/photographer");
+      else navigate("/participant");
     } catch (err: any) {
       setError(err.response?.data?.detail || "Login failed");
     }
   };
 
   return (
-    <div className="p-6 max-w-md mx-auto mt-10 bg-white shadow rounded">
-      <h2 className="text-2xl font-bold mb-4">Login</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="max-w-md w-full bg-white p-8 rounded-lg shadow">
+        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
 
-      <form onSubmit={handleLogin}>
-        {error && <p className="text-red-500 mb-2">{error}</p>}
+        <form onSubmit={handleLogin}>
+          {error && <p className="text-red-500 text-center mb-3">{error}</p>}
 
-        <input
-          type="email"
-          className="input"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+          <label className="block text-sm font-medium">Username</label>
+          <input
+            className="input"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
 
-        <input
-          type="password"
-          className="input mt-3"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          <label className="block text-sm font-medium mt-4">Password</label>
+          <input
+            type="password"
+            className="input"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-        <select
-          className="input mt-3"
-          value={role}
-          onChange={(e) => setRole(e.target.value as Role)}
-        >
-          <option value="participant">Participant</option>
-          <option value="photographer">Photographer</option>
-          <option value="host">Host</option>
-        </select>
-
-        <button className="btn-primary mt-4 w-full">Login</button>
-      </form>
+          <button className="btn-primary w-full mt-6">Login</button>
+        </form>
+      </div>
     </div>
   );
 };

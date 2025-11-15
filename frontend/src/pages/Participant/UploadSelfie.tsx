@@ -1,92 +1,52 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { searchPhotos } from "../../api/endpoints";
+import { API_BASE_URL } from "../../api/axios";
 
-const UploadSelfie: React.FC = () => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-  const [uploading, setUploading] = useState(false);
-  const [message, setMessage] = useState("");
+export default function UploadSelfie() {
+  const [file, setFile] = useState<File | null>(null);
+  const [eventCode, setEventCode] = useState("");
+  const [results, setResults] = useState<any[]>([]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setSelectedFile(file);
-
-      // Preview the selfie
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleUpload = async () => {
-    if (!selectedFile) {
-      setMessage("Please select a selfie to upload.");
-      return;
-    }
-
-    setUploading(true);
-    setMessage("");
-
+  const handleSearch = async () => {
+    if (!file || !eventCode) return alert("Provide selfie and event code");
     try {
-      // Mock upload process (replace with your API call)
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // Example API call:
-      // const formData = new FormData();
-      // formData.append("selfie", selectedFile);
-      // await axios.post("/api/upload-selfie", formData);
-
-      setMessage("Selfie uploaded successfully!");
-      setSelectedFile(null);
-      setPreview(null);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        setMessage(`Upload failed: ${error.message}`);
-      } else {
-        setMessage("Upload failed. Please try again.");
-      }
-    } finally {
-      setUploading(false);
+      const res = await searchPhotos(file, eventCode);
+      const matches = res.data.results?.[0] ?? [];
+      setResults(matches);
+    } catch (err: any) {
+      console.error(err);
+      alert("Search failed: " + (err.response?.data?.detail || err.message));
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow rounded-md">
-      <h2 className="text-xl font-semibold mb-4 text-center">Upload Selfie</h2>
-
+    <div>
+      <h2>Find My Photos</h2>
+      <input
+        type="text"
+        placeholder="Event code"
+        value={eventCode}
+        onChange={(e) => setEventCode(e.target.value)}
+      />
       <input
         type="file"
         accept="image/*"
-        onChange={handleFileChange}
-        className="mb-4 w-full"
+        onChange={(e) => setFile(e.target.files?.[0] ?? null)}
       />
+      <button onClick={handleSearch}>Search</button>
 
-      {preview && (
-        <div className="mb-4">
-          <p className="font-medium mb-2">Preview:</p>
-          <img
-            src={preview}
-            alt="Selfie Preview"
-            className="w-48 h-48 object-cover rounded-full mx-auto border"
-          />
-        </div>
-      )}
-
-      {message && <p className="mb-4 text-center text-sm text-gray-700">{message}</p>}
-
-      <button
-        onClick={handleUpload}
-        disabled={uploading}
-        className={`w-full py-2 px-4 rounded-md text-white ${
-          uploading ? "bg-gray-400" : "bg-green-600 hover:bg-green-700"
-        }`}
-      >
-        {uploading ? "Uploading..." : "Upload Selfie"}
-      </button>
+      <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
+        {results.map((r: any) => (
+          <div key={r.image_name}>
+            <img
+              src={`${API_BASE_URL}/uploads/${r.event_code}/${r.image_name}`}
+              alt=""
+              style={{ width: 200 }}
+            />
+            <div>score: {r.score.toFixed(3)}</div>
+          </div>
+        ))}
+      </div>
     </div>
   );
-};
-
-export default UploadSelfie;
+}

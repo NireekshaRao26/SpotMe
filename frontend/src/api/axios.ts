@@ -1,24 +1,15 @@
+// src/api/axios.ts
 import axios from "axios";
 
-const api = axios.create({
-  baseURL: "http://localhost:8000",
-  withCredentials: false,
+export const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+
+export const api = axios.create({
+  baseURL: API_BASE_URL,
 });
 
-// Attach token automatically
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-
-  if (token) {
-    if (!config.headers) {
-      config.headers = {} as any;  // bypass TS, Axios will convert internally
-    }
-    (config.headers as any).set
-      ? (config.headers as any).set("Authorization", `Bearer ${token}`)
-      : (config.headers["Authorization"] = `Bearer ${token}`);
-  }
-
-  return config;
-});
-
-export default api;
+// helper to set/remove token
+export const setAuthToken = (token: string | null) => {
+  if (token) api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  else delete api.defaults.headers.common["Authorization"];
+};

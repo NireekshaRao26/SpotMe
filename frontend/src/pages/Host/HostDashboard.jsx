@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import axios from "../../axios";
-import EventCard from "../../components/eventcard";
+import { api } from "../../api/axios";
+import EventCard from "../../components/eventCard";
 
 export default function HostDashboard() {
   const [events, setEvents] = useState([]);
@@ -9,7 +9,7 @@ export default function HostDashboard() {
 
   const fetchEvents = async () => {
     try {
-      const res = await axios.get("/host/events", {
+      const res = await api.get("/host/events", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setEvents(res.data.events);
