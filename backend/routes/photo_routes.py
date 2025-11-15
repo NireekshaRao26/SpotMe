@@ -20,31 +20,73 @@ async def upload_photo(
     file: UploadFile = File(...),
     user = Depends(require_role("photographer")),
 ):
+    from fastapi import HTTPException
     db = SessionLocal()
+
     try:
+        # ---------------------------
+        # 1. Validate Event Code
+        # ---------------------------
         event = db.query(Event).filter(Event.event_code == event_code).first()
         if not event:
             raise HTTPException(status_code=404, detail="Invalid event code")
 
+        # ---------------------------
+        # 2. Save the File
+        # ---------------------------
         safe_name = f"{uuid.uuid4().hex}_{file.filename}"
+
         event_folder = os.path.join(UPLOAD_DIR, event_code)
         os.makedirs(event_folder, exist_ok=True)
+
         file_path = os.path.join(event_folder, safe_name)
+
         with open(file_path, "wb") as out:
             shutil.copyfileobj(file.file, out)
 
-        
+        # ---------------------------
+        # 3. Extract Face Embeddings
+        # ---------------------------
         embeddings = get_face_embeddings(file_path)
-        if not embeddings:
-            return {"error": "No faces detected in the image"}
 
+        if not embeddings:
+            raise HTTPException(status_code=400, detail="No faces detected in the image")
+
+        # ---------------------------
+        # 4. Store in Qdrant
+        # ---------------------------
         store_embeddings_in_qdrant(embeddings, safe_name, event_code)
 
-        photo = Photo(event_code=event_code, uploader_id=user.id, image_name=safe_name, file_url=file_path)
+        # ---------------------------
+        # 5. Save Photo in DB
+        # ---------------------------
+        photo = Photo(
+            event_code=event_code,
+            uploader_id=user.id,
+            image_name=safe_name,
+            file_url=file_path
+        )
+
         db.add(photo)
         db.commit()
 
-        return {"message": "uploaded", "faces_detected": len(embeddings)}
+        # ---------------------------
+        # 6. Success Response
+        # ---------------------------
+        return {
+            "message": "Photo uploaded",
+            "faces_detected": len(embeddings),
+            "image_name": safe_name,
+        }
+
+    except HTTPException as e:
+        # Frontend can read detail message
+        raise e
+
+    except Exception as e:
+        # Any unknown error is shown to developer
+        raise HTTPException(status_code=500, detail=str(e))
+
     finally:
         db.close()
 
