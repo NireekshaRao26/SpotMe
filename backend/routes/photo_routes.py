@@ -65,3 +65,20 @@ async def search_photo(
     results = search_similar_faces(embeddings, event_code)
     os.remove(temp_path)
     return {"message": f"Search completed for {event_code}", "results": results}
+
+
+@router.get("/list/{event_code}")
+def list_event_photos(event_code: str, user = Depends(require_role("host"))):
+    db = SessionLocal()
+    try:
+        rows = db.query(Photo).filter(Photo.event_code == event_code).all()
+        return [
+            {
+                "image_name": r.image_name,
+                "file_url": r.file_url,
+                "uploaded_at": r.uploaded_at
+            }
+            for r in rows
+        ]
+    finally:
+        db.close()

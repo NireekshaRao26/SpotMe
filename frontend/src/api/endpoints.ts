@@ -25,8 +25,16 @@ export const loginUser = (payload: any) => {
   });
 };
 
-export const createEvent = (payload: any) =>
-  api.post("/events/create", payload);
+export const createEvent = (name: string) => {
+  const form = new FormData();
+  form.append("name", name);
+
+  return api.post("/events/create", form, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+};
 
 export const listHostEvents = () => api.get("/events/list");
 
@@ -45,3 +53,11 @@ export const searchPhotos = (file: File, eventCode: string) => {
 
   return api.post("/photos/search", form);
 };
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});

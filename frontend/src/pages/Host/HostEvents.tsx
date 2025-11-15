@@ -1,18 +1,15 @@
 import { useEffect, useState } from "react";
-import { api } from "../../api/axios";
+import { listHostEvents } from "../../api/endpoints";
 import EventCard from "../../components/eventCard";
 
 export default function HostEvents() {
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState<any[]>([]);
   const [error, setError] = useState("");
-  const token = localStorage.getItem("token");
 
   const loadEvents = async () => {
     try {
-      const res = await api.get("/host/events", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setEvents(res.data.events);
+      const res = await listHostEvents();
+      setEvents(res.data);
     } catch (err) {
       setError("Failed to load events");
     }
@@ -32,7 +29,7 @@ export default function HostEvents() {
         {events.length === 0 ? (
           <p>You haven't created any events yet.</p>
         ) : (
-          events.map((event) => <EventCard key={event.id} event={event} />)
+          events.map((ev) => <EventCard key={ev.event_code} event={ev} />)
         )}
       </div>
     </div>
