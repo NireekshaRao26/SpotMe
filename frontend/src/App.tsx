@@ -12,7 +12,7 @@ import UploadPhoto from "./pages/Photographer/UploadPhoto";
 
 import ParticipantDashboard from "./pages/Participant/ParticipantDashboard";
 import UploadSelfie from "./pages/Participant/UploadSelfie";
-import JoinEvent from "./pages/Participant/JoinEvent";
+
 import HostEventPhotos from "./pages/Host/HostEventPhotos";
 
 function App() {
@@ -38,7 +38,6 @@ function App() {
 
           {/* PARTICIPANT */}
           <Route path="/participant" element={<ParticipantDashboard />} />
-          <Route path="/participant/join" element={<JoinEvent />} />
           <Route path="/participant/upload-selfie" element={<UploadSelfie />} />
         </Routes>
       </div>

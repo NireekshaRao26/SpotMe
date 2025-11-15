@@ -1,33 +1,21 @@
-import React from "react";
+// src/pages/Participant/ParticipantDashboard.tsx
 import { Link } from "react-router-dom";
-import SearchPage from "./SearchPage";
 
-const ParticipantDashboard: React.FC = () => {
+export default function ParticipantDashboard() {
   return (
-    <div className="max-w-5xl mx-auto mt-10 px-4">
-      <h1 className="text-2xl font-bold mb-4 text-center">
+    <div className="max-w-3xl mx-auto mt-10 p-4">
+      <h1 className="text-2xl font-bold text-center mb-6">
         Participant Dashboard
       </h1>
 
-      <div className="flex justify-center gap-4 mb-6">
-        <Link to="/participant/search" className="text-blue-600 underline">
-          Search Photos
-        </Link>
-        <Link to="/participant/join" className="text-blue-600 underline">
-          Join Event
-        </Link>
+      <div className="flex flex-col gap-4 items-center">
         <Link
           to="/participant/upload-selfie"
-          className="text-blue-600 underline"
+          className="bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700"
         >
-          Upload Selfie
+          🔍 Find My Photos
         </Link>
       </div>
-
-      {/* Render search with empty photos by default */}
-      <SearchPage photos={[]} />
     </div>
   );
-};
-
-export default ParticipantDashboard;
+}
