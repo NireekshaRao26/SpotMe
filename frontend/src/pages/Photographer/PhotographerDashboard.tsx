@@ -1,64 +1,76 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import axiosInstance from "../../api/axios";
+import React, { useEffect, useState } from "react";
 
-export default function PhotographerDashboard() {
-  const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
+interface Event {
+  id: string;
+  name: string;
+  date: string;
+  location: string;
+  status: "upcoming" | "completed";
+}
 
+const PhotographerDashboard: React.FC = () => {
+  const [events, setEvents] = useState<Event[]>([]);
+
+  // Simulate fetching events from API
   useEffect(() => {
     const fetchEvents = async () => {
-      try {
-        const res = await axiosInstance.get("/photographer/events");
-        setEvents(res.data);
-      } catch (err) {
-        console.error("Failed to load events:", err);
-      } finally {
-        setLoading(false);
-      }
+      // Replace with real API call
+      const data: Event[] = [
+        {
+          id: "EVT-X4T29P",
+          name: "Wedding Shoot",
+          date: "2025-12-01",
+          location: "Mumbai",
+          status: "upcoming",
+        },
+        {
+          id: "EVT-A1B2C3",
+          name: "Birthday Party",
+          date: "2025-11-20",
+          location: "Pune",
+          status: "completed",
+        },
+      ];
+      setEvents(data);
     };
 
     fetchEvents();
   }, []);
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-semibold mb-4">Photographer Dashboard</h1>
-      <p className="text-gray-600 mb-6">
-        Upload event photos and manage your assigned events.
-      </p>
+    <div className="min-h-screen bg-gray-100 p-6">
+      <header className="mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">Photographer Dashboard</h1>
+        <p className="text-gray-600">Manage your upcoming and past events</p>
+      </header>
 
-      <Link
-        to="/photographer/upload"
-        className="inline-block bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
-      >
-        Upload Photos
-      </Link>
-
-      <div className="mt-10">
-        <h2 className="text-xl font-semibold mb-3">Your Assigned Events</h2>
-
-        {loading ? (
-          <p className="text-gray-500">Loading events...</p>
-        ) : events.length === 0 ? (
-          <p className="text-gray-500">No events assigned yet.</p>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {events.map((ev) => (
-              <div
-                key={ev.id}
-                className="border rounded-lg p-4 shadow-sm hover:shadow-md transition"
+      <section>
+        <h2 className="text-2xl font-semibold text-gray-700 mb-4">Your Events</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {events.map((event) => (
+            <div
+              key={event.id}
+              className="bg-white p-4 rounded-xl shadow hover:shadow-lg transition"
+            >
+              <h3 className="text-xl font-bold text-gray-800">{event.name}</h3>
+              <p className="text-gray-600">Date: {event.date}</p>
+              <p className="text-gray-600">Location: {event.location}</p>
+              <p
+                className={`mt-2 font-semibold ${
+                  event.status === "upcoming" ? "text-green-600" : "text-gray-500"
+                }`}
               >
-                <h3 className="text-lg font-medium">{ev.event_name}</h3>
-                <p className="text-gray-500 text-sm">Code: {ev.event_code}</p>
-                <p className="text-gray-500 text-sm mt-2">
-                  Date: {ev.date || "—"}
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+                Status: {event.status}
+              </p>
+              <button className="mt-4 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
+                View Details
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
-}
+};
+
+export default PhotographerDashboard;
