@@ -20,7 +20,7 @@ const Login: React.FC = () => {
       const res = await loginUser({ username, password });
 
       const token = res.data.access_token;
-      const role = res.data.role; // backend should send this
+      const role = res.data.role;
 
       setAuthToken(token);
       localStorage.setItem("token", token);

@@ -53,7 +53,7 @@ export default function UploadPhoto() {
 
       const msg = err.response?.data?.detail || "Upload failed.";
       setError(msg);
-      alert("Error: " + msg); // Shows "Invalid event code"
+      alert("Error: " + msg);
     }
 
     setLoading(false);

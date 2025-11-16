@@ -1,28 +1,22 @@
-// auth.js
 const TOKEN_KEY = "jwt_token";
 
-// Save token to localStorage
 export const setToken = (token) => {
   localStorage.setItem(TOKEN_KEY, token);
 };
 
-// Get token from localStorage
 export const getToken = () => {
   return localStorage.getItem(TOKEN_KEY);
 };
 
-// Remove token from localStorage
 export const removeToken = () => {
   localStorage.removeItem(TOKEN_KEY);
 };
 
-// Check if user is authenticated
 export const isAuthenticated = () => {
   const token = getToken();
   return !!token;
 };
 
-// Example login function (replace with actual API call)
 export const login = async (email, password) => {
   try {
     const response = await fetch("/api/login", {
@@ -46,7 +40,6 @@ export const login = async (email, password) => {
   }
 };
 
-// Example logout function
 export const logout = () => {
   removeToken();
 };

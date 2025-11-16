@@ -24,16 +24,10 @@ async def upload_photo(
     db = SessionLocal()
 
     try:
-        # ---------------------------
-        # 1. Validate Event Code
-        # ---------------------------
         event = db.query(Event).filter(Event.event_code == event_code).first()
         if not event:
             raise HTTPException(status_code=404, detail="Invalid event code")
 
-        # ---------------------------
-        # 2. Save the File
-        # ---------------------------
         safe_name = f"{uuid.uuid4().hex}_{file.filename}"
 
         event_folder = os.path.join(UPLOAD_DIR, event_code)
@@ -44,22 +38,13 @@ async def upload_photo(
         with open(file_path, "wb") as out:
             shutil.copyfileobj(file.file, out)
 
-        # ---------------------------
-        # 3. Extract Face Embeddings
-        # ---------------------------
         embeddings = get_face_embeddings(file_path)
 
         if not embeddings:
             raise HTTPException(status_code=400, detail="No faces detected in the image")
 
-        # ---------------------------
-        # 4. Store in Qdrant
-        # ---------------------------
         store_embeddings_in_qdrant(embeddings, safe_name, event_code)
 
-        # ---------------------------
-        # 5. Save Photo in DB
-        # ---------------------------
         photo = Photo(
             event_code=event_code,
             uploader_id=user.id,
@@ -70,9 +55,6 @@ async def upload_photo(
         db.add(photo)
         db.commit()
 
-        # ---------------------------
-        # 6. Success Response
-        # ---------------------------
         return {
             "message": "Photo uploaded",
             "faces_detected": len(embeddings),
@@ -80,11 +62,9 @@ async def upload_photo(
         }
 
     except HTTPException as e:
-        # Frontend can read detail message
         raise e
 
     except Exception as e:
-        # Any unknown error is shown to developer
         raise HTTPException(status_code=500, detail=str(e))
 
     finally:

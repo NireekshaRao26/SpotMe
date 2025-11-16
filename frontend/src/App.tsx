@@ -20,23 +20,14 @@ function App() {
     <BrowserRouter>
       <div className="min-h-screen bg-gray-100">
         <Routes>
-          {/* HOME */}
           <Route path="/" element={<HomePage />} />
-
-          {/* AUTH */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-
-          {/* HOST */}
           <Route path="/host" element={<HostDashboard />} />
           <Route path="/host/create-event" element={<CreateEvent />} />
           <Route path="/host/event/:event_code" element={<HostEventPhotos />} />
-
-          {/* PHOTOGRAPHER */}
           <Route path="/photographer" element={<PhotographerDashboard />} />
           <Route path="/photographer/upload" element={<UploadPhoto />} />
-
-          {/* PARTICIPANT */}
           <Route path="/participant" element={<ParticipantDashboard />} />
           <Route path="/participant/upload-selfie" element={<UploadSelfie />} />
         </Routes>

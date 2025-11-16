@@ -98,32 +98,7 @@ export default function UploadSelfie() {
               disabled={loading}
               className="w-full py-4 bg-gradient-to-r from-[#6366F1] to-[#EC4899] text-white font-bold rounded-xl shadow-2xl shadow-[#EC4899]/50 hover:shadow-[#EC4899]/80 transform hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none border border-[#A5B4FC]/30 text-lg"
             >
-              {loading ? (
-                <span className="flex items-center justify-center">
-                  <svg
-                    className="animate-spin h-5 w-5 mr-3"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                      fill="none"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Searching...
-                </span>
-              ) : (
-                "Search Photos"
-              )}
+              {loading ? "Searching..." : "Search Photos"}
             </button>
           </div>
         </div>
@@ -133,31 +108,65 @@ export default function UploadSelfie() {
             <h3 className="text-2xl font-bold text-[#E2E8F0] mb-6">
               Your Photos ({results.length})
             </h3>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {results.map((r: any) => (
-                <div
-                  key={r.image_name}
-                  className="group bg-gradient-to-br from-[#6366F1]/10 to-[#EC4899]/10 backdrop-blur-xl border-2 border-[#A5B4FC]/30 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-[#EC4899]/30 transition-all duration-300 hover:scale-105"
-                >
-                  <div className="aspect-square overflow-hidden">
-                    <img
-                      src={`${API_BASE_URL}/uploads/${r.event_code}/${r.image_name}`}
-                      alt=""
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                  </div>
-                  <div className="p-4 bg-[#0F172A]/60">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[#A5B4FC] text-sm font-semibold">
-                        Match Score
-                      </span>
-                      <span className="text-[#E2E8F0] font-bold">
-                        {(r.score * 100).toFixed(1)}%
-                      </span>
+              {results.map((r: any) => {
+                const previewUrl = `${API_BASE_URL}/uploads/${
+                  r.event_code
+                }/${encodeURIComponent(r.image_name)}`;
+
+                const downloadUrl = `${API_BASE_URL}/download/${
+                  r.event_code
+                }/${encodeURIComponent(r.image_name)}`;
+
+                const handleDownload = async () => {
+                  try {
+                    const response = await fetch(downloadUrl);
+                    if (!response.ok) throw new Error("Download failed");
+                    const blob = await response.blob();
+                    const link = document.createElement("a");
+                    link.href = URL.createObjectURL(blob);
+                    link.download = r.image_name;
+                    link.click();
+                    URL.revokeObjectURL(link.href);
+                  } catch (error) {
+                    alert("Failed to download image. Try again.");
+                  }
+                };
+
+                return (
+                  <div
+                    key={r.image_name}
+                    className="group bg-gradient-to-br from-[#6366F1]/10 to-[#EC4899]/10 backdrop-blur-xl border-2 border-[#A5B4FC]/30 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-[#EC4899]/30 transition-all duration-300 hover:scale-105"
+                  >
+                    <div className="aspect-square overflow-hidden">
+                      <img
+                        src={previewUrl}
+                        alt={r.image_name}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                    </div>
+
+                    <div className="p-4 bg-[#0F172A]/60 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[#A5B4FC] text-sm font-semibold">
+                          Match Score
+                        </span>
+                        <span className="text-[#E2E8F0] font-bold">
+                          {(r.score * 100).toFixed(1)}%
+                        </span>
+                      </div>
+
+                      <button
+                        onClick={handleDownload}
+                        className="w-full py-2 bg-gradient-to-r from-[#6366F1] to-[#EC4899] text-white font-semibold rounded-lg shadow-md hover:shadow-[#EC4899]/50 transition-all"
+                      >
+                        Download
+                      </button>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
