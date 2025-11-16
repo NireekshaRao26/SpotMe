@@ -1,101 +1,144 @@
-# SPOTME - Event Photo Discovery Platform
+# 📌 SpotMe — AI Event Photo Discovery Platform
 
-A complete website for events (weddings, college fests, marathons, corporate gatherings) that helps attendees find photos of themselves using face recognition.
+**SpotMe** is a web platform that helps event participants **find photos of themselves** using **Face Recognition & Vector Search**.
 
-## 🚀 Quick Start
+Hosts create events, photographers upload photos, and participants simply upload a selfie to discover matching pictures from the event.
 
-### Option 1: Node.js HTTP Server (Recommended)
+---
 
-1. Open PowerShell or Command Prompt in the project root directory
-2. Run:
+## ✨ Tech Stack
 
-```bash
-npx --yes http-server -p 3000
+| Layer | Technology |
+|-------|------------|
+| Frontend | React + TypeScript + TailwindCSS + Vite |
+| Backend | FastAPI (Python) |
+| Database | PostgreSQL |
+| Face Embeddings | InsightFace / OnnxRuntime |
+| Vector Search | Qdrant Cloud |
+| Auth | JWT (Role-based) |
+
+---
+
+## 🚀 Features
+
+✔ Host creates events & gets **unique event code**  
+✔ Photographer uploads photos linked to the event  
+✔ Participant uploads a selfie → finds matching event photos  
+✔ AI-powered **face recognition** using embeddings + Qdrant search  
+✔ Users can **download** their matched photos  
+✔ Secure JWT login (Host / Photographer / Participant)  
+✔ Beautiful **Neon Gradient UI** 🎨
+
+---
+
+## 🤖 Face Recognition (How it Works)
+
+1️⃣ Photo → Face detected using InsightFace  
+2️⃣ Generate **embedding vector** (face representation)  
+3️⃣ Save vector into **Qdrant**  
+4️⃣ Participant uploads selfie → embedding generated  
+5️⃣ Qdrant returns **closest matching results**  
+6️⃣ UI displays matches + similarity score
+
+---
+
+## 🔧 Requirements
+
+### Backend
+- Python 3.10+
+- PostgreSQL
+- Qdrant Cloud (free)
+
+### Frontend
+- Node.js 18+
+- npm or yarn
+
+---
+
+## ⚙ Backend Setup (FastAPI)
+
+📍 Create `backend/.env`:
+
+```env
+DATABASE_URL=postgresql://postgres:YOURPASS@localhost:5432/spotme
+JWT_SECRET=your_jwt_secret
+
+QDRANT_URL=https://YOUR-CLUSTER.qdrant.io
+QDRANT_API_KEY=YOUR-QDRANT-KEY
 ```
 
-3. Open your browser and visit:
-   - **User Portal**: http://localhost:3000/portals/user/
-   - **Photographer Portal**: http://localhost:3000/portals/photographer/
-   - **Host Portal**: http://localhost:3000/portals/host/
-   - **Admin Portal**: http://localhost:3000/portals/admin/
+📍 Run backend:
 
-### Option 2: VS Code Live Server
-
-If you're using VS Code:
-1. Install the "Live Server" extension
-2. Right-click on any portal's `index.html` file
-3. Select "Open with Live Server"
-
-## 📁 Portal Structure
-
-```
-portals/
-├── shared/          # Shared styles and utilities
-│   ├── styles/
-│   │   └── base.css
-│   └── scripts/
-│       └── core.js
-├── user/            # User Portal
-│   ├── index.html
-│   ├── styles.css
-│   └── app.js
-├── photographer/    # Photographer Portal
-│   ├── index.html
-│   ├── styles.css
-│   └── app.js
-├── host/            # Host Portal
-│   ├── index.html
-│   ├── styles.css
-│   └── app.js
-└── admin/           # Admin Portal
-    ├── index.html
-    ├── styles.css
-    └── app.js
+```sh
+cd backend
+python -m venv venv
+source venv/Scripts/activate   # Windows
+pip install -r requirements.txt
+uvicorn main:app --reload
 ```
 
-## 🎯 Features
+Backend runs at: http://localhost:8000
 
-### User Portal
-- Swipeable event timeline
-- Password/QR code event access
-- Upload photos or take selfie
-- Face recognition photo search
-- Interactive gallery with download
+---
 
-### Photographer Portal
-- Bulk photo/video upload
-- Event gallery view
-- Face grouping preview
-- Upload status tracking
+## 🎨 Frontend Setup (React + Vite)
 
-### Host Portal
-- View all uploaded media
-- Filter by source (photographer/user)
-- Activity tracking
-- Download management
+📍 Confirm `frontend/src/api/axios.ts` contains:
 
-### Admin Portal
-- System overview dashboard
-- User/host/photographer management
-- Event management
-- System health monitoring
+```ts
+export const API_BASE_URL = "http://localhost:8000";
+```
 
-## ⚠️ Important Notes
+📍 Run frontend:
 
-- **ES6 Modules**: The portals use ES6 import/export, so they must be served over HTTP (not opened as `file://`)
-- **Port Number**: If port 3000 is busy, use a different port (e.g., 8080, 5000)
-- **Browser**: Works best in modern browsers (Chrome, Firefox, Edge, Safari)
+```sh
+cd frontend
+npm install
+npm run dev
+```
 
-## 🔧 Troubleshooting
+Frontend runs at: http://localhost:5173
 
-**Port already in use?**
-- Use a different port: `npx --yes http-server -p 8080`
-- Or stop the process using port 3000
+---
 
-**CORS errors?**
-- Make sure you're accessing via `http://localhost:3000` not `file://`
+## 🔑 User Roles
 
-**Modules not loading?**
-- Ensure you're running a server (not opening files directly)
-- Check browser console for specific errors
+| Role | Actions |
+|------|--------|
+| Host | Create/manage events |
+| Photographer | Upload event photos |
+| Participant | Upload selfie & download images |
 
+---
+
+## 📸 File Storage Structure
+
+```
+backend/uploads/EVT-ABC123/filename.jpeg
+```
+
+Public access URL:
+
+```
+http://localhost:8000/uploads/EVT-ABC123/filename.jpeg
+```
+
+---
+
+## 📚 API Docs
+
+Swagger UI:  
+➡ http://localhost:8000/docs
+
+---
+
+## 🧪 Testing Flow
+
+| Step | User | Action |
+|------|------|--------|
+| 1 | Host | Create event → Copy event code |
+| 2 | Photographer | Upload event photos |
+| 3 | Participant | Upload selfie & search |
+| 4 | Participant | Download photos |
+
+---
