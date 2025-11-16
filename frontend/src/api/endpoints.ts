@@ -25,6 +25,10 @@ export const loginUser = (payload: any) => {
   });
 };
 
+export const logoutUser = () => {
+  return api.post("/auth/logout");
+};
+
 export const createEvent = (name: string) => {
   const form = new FormData();
   form.append("name", name);

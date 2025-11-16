@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function ParticipantDashboard() {
   return (
-    <div className="min-h-screen bg-[#0F172A] flex items-center justify-center px-4 py-12 relative overflow-hidden">
+    <div className="min-h-screen bg-[#0F172A] relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 right-20 w-80 h-80 bg-[#6366F1]/25 rounded-full blur-3xl animate-pulse"></div>
         <div
@@ -15,7 +15,7 @@ export default function ParticipantDashboard() {
         ></div>
       </div>
 
-      <div className="relative z-10 w-full max-w-2xl">
+      <div className="relative z-10 p-6 max-w-6xl mx-auto">
         <div className="text-center mb-10">
           <h1 className="text-5xl font-extrabold bg-gradient-to-r from-[#6366F1] via-[#A5B4FC] to-[#EC4899] bg-clip-text text-transparent mb-4 animate-pulse">
             Participant Dashboard
@@ -25,7 +25,7 @@ export default function ParticipantDashboard() {
           </p>
         </div>
 
-        <div className="bg-gradient-to-br from-[#6366F1]/10 to-[#EC4899]/10 backdrop-blur-2xl p-12 rounded-3xl shadow-2xl border-2 border-[#A5B4FC]/40 shadow-[#6366F1]/20">
+        <div className="max-w-2xl mx-auto bg-gradient-to-br from-[#6366F1]/10 to-[#EC4899]/10 backdrop-blur-2xl p-12 rounded-3xl shadow-2xl border-2 border-[#A5B4FC]/40 shadow-[#6366F1]/20">
           <div className="flex flex-col gap-6 items-center">
             <div className="w-full max-w-md">
               <Link

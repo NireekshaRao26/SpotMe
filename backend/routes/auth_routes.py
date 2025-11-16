@@ -34,6 +34,10 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
     finally:
         db.close()
 
+@router.post("/logout")
+def logout():
+    return {"message": "Logged out successfully"}
+
 
 from pydantic import BaseModel
 

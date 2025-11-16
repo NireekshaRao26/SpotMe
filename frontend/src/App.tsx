@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Auth/Login";
@@ -14,10 +15,25 @@ import ParticipantDashboard from "./pages/Participant/ParticipantDashboard";
 import UploadSelfie from "./pages/Participant/UploadSelfie";
 
 import HostEventPhotos from "./pages/Host/HostEventPhotos";
+import Navbar from "./components/navbar";
 
-function App() {
+function AppRoutes() {
+  const location = useLocation();
+  const [token, setToken] = useState<string | null>(
+    localStorage.getItem("token")
+  );
+
+  useEffect(() => {
+    // update token presence on route change (covers login/logout navigations)
+    setToken(localStorage.getItem("token"));
+  }, [location]);
+
+  const hideOn = ["/", "/login", "/signup"];
+  const showNavbar = token && !hideOn.includes(location.pathname);
+
   return (
-    <BrowserRouter>
+    <>
+      {showNavbar && <Navbar />}
       <div className="min-h-screen bg-gray-100">
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -32,6 +48,14 @@ function App() {
           <Route path="/participant/upload-selfie" element={<UploadSelfie />} />
         </Routes>
       </div>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppRoutes />
     </BrowserRouter>
   );
 }
