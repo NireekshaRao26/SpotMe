@@ -3,10 +3,6 @@ import numpy as np
 import traceback
 
 def get_face_embeddings(image_path):
-    """
-    Extract face embeddings using ArcFace (512-d).
-    Returns a list of embedding vectors (one per detected face).
-    """
     try:
         reps = DeepFace.represent(
             img_path=image_path,

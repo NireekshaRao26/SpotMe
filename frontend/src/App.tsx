@@ -24,7 +24,6 @@ function AppRoutes() {
   );
 
   useEffect(() => {
-    // update token presence on route change (covers login/logout navigations)
     setToken(localStorage.getItem("token"));
   }, [location]);
 

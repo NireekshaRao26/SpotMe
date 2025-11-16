@@ -11,7 +11,6 @@ const Navbar: React.FC = () => {
     try {
       await logoutUser();
     } catch (err) {
-      // ignore network errors on logout
     } finally {
       localStorage.removeItem("token");
       localStorage.removeItem("role");
