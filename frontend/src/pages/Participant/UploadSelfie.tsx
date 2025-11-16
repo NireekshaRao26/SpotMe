@@ -1,4 +1,3 @@
-// src/pages/Participant/UploadSelfie.tsx
 import { useState } from "react";
 import { searchPhotos } from "../../api/endpoints";
 import { API_BASE_URL } from "../../api/axios";
@@ -37,54 +36,145 @@ export default function UploadSelfie() {
   };
 
   return (
-    <div className="max-w-lg mx-auto mt-10 p-6 bg-white shadow rounded">
-      <h2 className="text-2xl font-bold mb-4 text-center">Find My Photos</h2>
-
-      <label className="block mb-2 font-medium">Event Code</label>
-      <input
-        type="text"
-        value={eventCode}
-        onChange={(e) => setEventCode(e.target.value)}
-        className="w-full p-2 border rounded mb-4"
-        placeholder="Enter event code"
-      />
-
-      <label className="block mb-2 font-medium">Upload Selfie</label>
-      <input
-        type="file"
-        accept="image/*"
-        onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-        className="w-full p-2 border rounded"
-      />
-
-      {error && <p className="text-red-600 mt-3 font-semibold">❌ {error}</p>}
-
-      <button
-        onClick={handleSearch}
-        className="w-full mt-4 bg-green-600 text-white py-2 rounded hover:bg-green-700"
-      >
-        {loading ? "Searching..." : "Search Photos"}
-      </button>
-
-      {/* RESULTS */}
-      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {results.map((r: any) => (
-          <div key={r.image_name} className="border rounded shadow p-2">
-            <img
-              src={`${API_BASE_URL}/uploads/${r.event_code}/${r.image_name}`}
-              alt=""
-              className="w-full h-40 object-cover rounded"
-            />
-            <p className="mt-2 text-sm text-gray-700">
-              Score: {r.score.toFixed(3)}
-            </p>
-          </div>
-        ))}
+    <div className="min-h-screen bg-[#0F172A] relative overflow-hidden py-12 px-4">
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-20 right-20 w-80 h-80 bg-[#6366F1]/20 rounded-full blur-3xl animate-pulse"></div>
+        <div
+          className="absolute bottom-20 left-20 w-96 h-96 bg-[#EC4899]/20 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "1.5s" }}
+        ></div>
       </div>
 
-      {results.length === 0 && !loading && !error && (
-        <p className="text-center text-gray-500 mt-4">No photos found yet.</p>
-      )}
+      <div className="relative z-10 max-w-4xl mx-auto">
+        <div className="text-center mb-8">
+          <h2 className="text-4xl font-extrabold bg-gradient-to-r from-[#6366F1] via-[#A5B4FC] to-[#EC4899] bg-clip-text text-transparent mb-3">
+            Find My Photos
+          </h2>
+          <p className="text-[#E2E8F0] text-lg">
+            Upload your selfie to discover your event moments
+          </p>
+        </div>
+
+        <div className="bg-gradient-to-br from-[#6366F1]/10 to-[#EC4899]/10 backdrop-blur-2xl p-8 rounded-3xl shadow-2xl border-2 border-[#A5B4FC]/40 shadow-[#6366F1]/20 mb-8">
+          <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-bold text-[#A5B4FC] mb-3 uppercase tracking-wide">
+                Event Code
+              </label>
+              <input
+                type="text"
+                value={eventCode}
+                onChange={(e) => setEventCode(e.target.value)}
+                className="w-full px-5 py-4 bg-[#0F172A]/80 border-2 border-[#A5B4FC]/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] transition-all duration-300 text-[#E2E8F0] placeholder-[#A5B4FC]/50 font-medium text-center uppercase tracking-widest"
+                placeholder="e.g., EVT-ABC123"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold text-[#A5B4FC] mb-3 uppercase tracking-wide">
+                Upload Your Selfie
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                className="w-full px-5 py-4 bg-[#0F172A]/80 border-2 border-[#A5B4FC]/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] transition-all duration-300 text-[#E2E8F0] file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-gradient-to-r file:from-[#6366F1] file:to-[#EC4899] file:text-white file:font-semibold file:cursor-pointer hover:file:shadow-lg"
+              />
+              {file && (
+                <p className="text-[#A5B4FC] text-sm mt-2 font-medium">
+                  Selected: {file.name}
+                </p>
+              )}
+            </div>
+
+            {error && (
+              <div className="bg-red-500/15 border-2 border-red-400/50 text-red-300 px-5 py-4 rounded-xl backdrop-blur-sm">
+                {error}
+              </div>
+            )}
+
+            <button
+              onClick={handleSearch}
+              disabled={loading}
+              className="w-full py-4 bg-gradient-to-r from-[#6366F1] to-[#EC4899] text-white font-bold rounded-xl shadow-2xl shadow-[#EC4899]/50 hover:shadow-[#EC4899]/80 transform hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none border border-[#A5B4FC]/30 text-lg"
+            >
+              {loading ? (
+                <span className="flex items-center justify-center">
+                  <svg
+                    className="animate-spin h-5 w-5 mr-3"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Searching...
+                </span>
+              ) : (
+                "Search Photos"
+              )}
+            </button>
+          </div>
+        </div>
+
+        {results.length > 0 && (
+          <div>
+            <h3 className="text-2xl font-bold text-[#E2E8F0] mb-6">
+              Your Photos ({results.length})
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {results.map((r: any) => (
+                <div
+                  key={r.image_name}
+                  className="group bg-gradient-to-br from-[#6366F1]/10 to-[#EC4899]/10 backdrop-blur-xl border-2 border-[#A5B4FC]/30 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-[#EC4899]/30 transition-all duration-300 hover:scale-105"
+                >
+                  <div className="aspect-square overflow-hidden">
+                    <img
+                      src={`${API_BASE_URL}/uploads/${r.event_code}/${r.image_name}`}
+                      alt=""
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                  </div>
+                  <div className="p-4 bg-[#0F172A]/60">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#A5B4FC] text-sm font-semibold">
+                        Match Score
+                      </span>
+                      <span className="text-[#E2E8F0] font-bold">
+                        {(r.score * 100).toFixed(1)}%
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {results.length === 0 && !loading && !error && (
+          <div className="text-center py-12">
+            <div className="inline-block bg-gradient-to-br from-[#6366F1]/10 to-[#EC4899]/10 backdrop-blur-xl p-8 rounded-3xl border-2 border-[#A5B4FC]/30">
+              <p className="text-[#E2E8F0] text-lg font-semibold">
+                No photos found yet
+              </p>
+              <p className="text-[#A5B4FC] text-sm mt-2">
+                Upload your selfie and search to find your moments
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

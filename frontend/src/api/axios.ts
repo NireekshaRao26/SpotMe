@@ -1,4 +1,3 @@
-// src/api/axios.ts
 import axios from "axios";
 
 export const API_BASE_URL =
@@ -8,7 +7,6 @@ export const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
-// helper to set/remove token
 export const setAuthToken = (token: string | null) => {
   if (token) api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   else delete api.defaults.headers.common["Authorization"];
