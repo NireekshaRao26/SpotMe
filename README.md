@@ -72,7 +72,7 @@ QDRANT_API_KEY=YOUR-QDRANT-KEY
 ```sh
 cd backend
 python -m venv venv
-source venv/Scripts/activate   # Windows
+source venv/Scripts/activate   # Windows( .\venv\Scripts\Activate.ps1 for powershell)
 pip install -r requirements.txt
 uvicorn main:app --reload
 ```
@@ -142,3 +142,4 @@ Swagger UI:
 | 4 | Participant | Download photos |
 
 ---
+dont forget to update the .env file to your valid cluster info
