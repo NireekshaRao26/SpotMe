@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { api } from "../api/axios";
 
 interface Event {
   name: string;
@@ -52,6 +53,19 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
             />
           </svg>
         </div>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            if (confirm("Are you sure you want to delete this event?")) {
+              api.delete(`/events/delete/${event.event_code}`).then(() => {
+                window.location.reload();
+              });
+            }
+          }}
+          className="absolute top-3 right-3 bg-red-500 text-white p-2 rounded-full shadow-lg hover:bg-red-600 z-20"
+        >
+          ✕
+        </button>
       </div>
     </div>
   );

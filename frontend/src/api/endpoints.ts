@@ -67,3 +67,7 @@ api.interceptors.request.use((config) => {
 });
 
 export const getHostStats = () => api.get("/events/stats");
+
+export function getEventOverview(eventCode: string) {
+  return api.get(`/events/overview/${eventCode}`);
+}

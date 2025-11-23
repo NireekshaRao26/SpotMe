@@ -98,3 +98,21 @@ def list_event_photos(
         }
         for r in rows
     ]
+
+
+@router.delete("/delete/{image_name}")
+def delete_photo(image_name: str, user = Depends(require_role("host")), db: Session = Depends(get_db)):
+    photo = db.query(Photo).filter(Photo.image_name == image_name).first()
+    if not photo:
+        raise HTTPException(status_code=404, detail="Photo not found")
+
+    # Delete file from disk
+    import os
+    if os.path.exists(photo.file_url):
+        os.remove(photo.file_url)
+
+    # Delete DB record
+    db.delete(photo)
+    db.commit()
+
+    return {"message": "Photo deleted successfully"}

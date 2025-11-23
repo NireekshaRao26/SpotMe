@@ -70,3 +70,76 @@ def host_stats(
             "created_at": last_event.created_at if last_event else None,
         },
     }
+
+@router.get("/overview/{event_code}")
+def event_overview(
+    event_code: str,
+    user=Depends(require_role("host")),
+    db: Session = Depends(get_db)
+):
+
+    event = db.query(Event).filter(Event.event_code == event_code).first()
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    photos = db.query(Photo).filter(Photo.event_code == event_code).all()
+
+    total_photos = len(photos)
+
+    # Photos uploaded today
+    photos_today = (
+        db.query(Photo)
+        .filter(
+            Photo.event_code == event_code,
+            func.date(Photo.uploaded_at) == func.current_date()
+        )
+        .count()
+    )
+
+    # Recent 4 photos
+    recent_photos = [
+        {
+            "image_name": p.image_name,
+            "file_url": f"/uploads/{event_code}/{p.image_name}",
+            "uploaded_at": p.uploaded_at
+        }
+        for p in sorted(photos, key=lambda x: x.uploaded_at, reverse=True)[:4]
+    ]
+
+    # Photographer stats
+    photographer_stats = {}
+    for p in photos:
+        photographer_stats[p.uploader_id] = (
+            photographer_stats.get(p.uploader_id, 0) + 1
+        )
+
+    return {
+        "event_code": event.event_code,
+        "event_name": event.name,
+        "created_at": event.created_at,
+        "total_photos": total_photos,
+        "photos_today": photos_today,
+        "recent_photos": recent_photos,
+        "photographer_stats": photographer_stats
+    }
+
+@router.delete("/delete/{event_code}")
+def delete_event(event_code: str, user = Depends(require_role("host")), db: Session = Depends(get_db)):
+    event = db.query(Event).filter(Event.event_code == event_code, Event.created_by == user.id).first()
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    # Delete photos for this event
+    db.query(Photo).filter(Photo.event_code == event_code).delete()
+
+    # Delete event folder from uploads
+    import shutil, os
+    folder_path = f"uploads/{event_code}"
+    if os.path.exists(folder_path):
+        shutil.rmtree(folder_path)
+
+    # Delete event
+    db.delete(event)
+    db.commit()
+
+    return {"message": "Event deleted successfully"}
