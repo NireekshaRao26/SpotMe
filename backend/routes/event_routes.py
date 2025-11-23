@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Form, Depends, HTTPException
 from database.db import get_db
-from database.models import Event, Photo
+from database.models import Event, Photo, SearchHistory
+
 from sqlalchemy.orm import Session
 from auth.utils import require_role
 import random, string
@@ -143,3 +144,35 @@ def delete_event(event_code: str, user = Depends(require_role("host")), db: Sess
     db.commit()
 
     return {"message": "Event deleted successfully"}
+
+@router.get("/participant/profile")
+def participant_profile(user=Depends(require_role("participant")), db: Session = Depends(get_db)):
+
+    # total search count
+    total_searches = db.query(SearchHistory).filter(SearchHistory.user_id == user.id).count()
+
+    return {
+        "username": user.username,
+        "role": user.role,
+        "joined_at": user.created_at,
+        "total_searches": total_searches
+    }
+
+@router.get("/participant/recent-searches")
+def recent_searches(user=Depends(require_role("participant")), db: Session = Depends(get_db)):
+
+    rows = (
+        db.query(SearchHistory)
+        .filter(SearchHistory.user_id == user.id)
+        .order_by(SearchHistory.searched_at.desc())
+        .limit(3)
+        .all()
+    )
+
+    return [
+        {
+            "event_code": r.event_code,
+            "searched_at": r.searched_at
+        }
+        for r in rows
+    ]

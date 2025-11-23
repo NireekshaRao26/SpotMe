@@ -62,9 +62,11 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
               });
             }
           }}
-          className="absolute top-3 right-3 bg-red-500 text-white p-2 rounded-full shadow-lg hover:bg-red-600 z-20"
+          title="Delete event"
+          aria-label={`Delete event ${event.event_code}`}
+          className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-200 bg-black/40 hover:bg-black/50 text-white p-1.5 rounded-full shadow-md hover:scale-105 z-20 backdrop-blur-sm"
         >
-          ✕
+          <span className="text-sm leading-none">✕</span>
         </button>
       </div>
     </div>

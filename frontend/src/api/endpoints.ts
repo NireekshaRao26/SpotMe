@@ -71,3 +71,9 @@ export const getHostStats = () => api.get("/events/stats");
 export function getEventOverview(eventCode: string) {
   return api.get(`/events/overview/${eventCode}`);
 }
+
+export const getParticipantProfile = () =>
+  api.get("/events/participant/profile");
+
+export const getRecentSearches = () =>
+  api.get("/events/participant/recent-searches");

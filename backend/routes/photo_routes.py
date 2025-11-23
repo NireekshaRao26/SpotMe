@@ -1,7 +1,7 @@
 from fastapi import APIRouter, UploadFile, File, Form, Depends, HTTPException
 import os, uuid, shutil
 from sqlalchemy.orm import Session
-
+from database.models import Event, Photo, SearchHistory
 from database.db import get_db
 from database.models import Photo, Event
 from auth.utils import require_role
@@ -66,6 +66,8 @@ async def upload_photo(
 async def search_photo(
     event_code: str = Form(...),
     file: UploadFile = File(...),
+    user = Depends(require_role("participant")),
+    db: Session = Depends(get_db)
 ):
     temp_path = os.path.join(TEMP_DIR, f"{uuid.uuid4().hex}_{file.filename}")
     with open(temp_path, "wb") as out:
@@ -78,6 +80,14 @@ async def search_photo(
 
     results = search_similar_faces(embeddings, event_code)
     os.remove(temp_path)
+
+    # ⭐⭐ SAVE SEARCH HISTORY HERE ⭐⭐
+    history = SearchHistory(
+        user_id=user.id,
+        event_code=event_code
+    )
+    db.add(history)
+    db.commit()
 
     return {"message": f"Search completed for {event_code}", "results": results}
 
