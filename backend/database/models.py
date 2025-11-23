@@ -21,8 +21,10 @@ class Event(Base):
     event_code = Column(String, unique=True, index=True)
     name = Column(String)
     created_by = Column(Integer, ForeignKey("users.id"))
+    created_at = Column(DateTime(timezone=True), server_default=func.now())  # ✅ ADD THIS
 
     creator = relationship("User")
+
 
 
 class Photo(Base):

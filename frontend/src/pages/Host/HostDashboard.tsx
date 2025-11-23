@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { listHostEvents } from "../../api/endpoints";
+import { listHostEvents, getHostStats } from "../../api/endpoints";
 import EventCard from "../../components/eventCard";
 import { useNavigate } from "react-router-dom";
 
 export default function HostDashboard() {
   const [events, setEvents] = useState<any[]>([]);
+  const [stats, setStats] = useState<any>(null);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -17,8 +18,18 @@ export default function HostDashboard() {
     }
   };
 
+  const fetchStats = async () => {
+    try {
+      const res = await getHostStats();
+      setStats(res.data);
+    } catch (err) {
+      console.log("Could not fetch stats");
+    }
+  };
+
   useEffect(() => {
     fetchEvents();
+    fetchStats();
   }, []);
 
   return (
@@ -36,6 +47,7 @@ export default function HostDashboard() {
       </div>
 
       <div className="relative z-10 p-6 max-w-6xl mx-auto">
+        {/* HEADER */}
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-5xl font-extrabold bg-gradient-to-r from-[#6366F1] via-[#A5B4FC] to-[#EC4899] bg-clip-text text-transparent mb-3 animate-pulse">
@@ -54,6 +66,49 @@ export default function HostDashboard() {
           </button>
         </div>
 
+        {/* STATS CARDS */}
+        {stats && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            {/* Total Photos */}
+            <div className="bg-[#1E293B] p-6 rounded-2xl border border-[#A5B4FC]/30">
+              <p className="text-[#A5B4FC] text-sm font-semibold">
+                Total Photos
+              </p>
+              <h2 className="text-3xl text-white font-bold mt-2">
+                {stats.total_photos}
+              </h2>
+            </div>
+
+            {/* Total Events */}
+            <div className="bg-[#1E293B] p-6 rounded-2xl border border-[#A5B4FC]/30">
+              <p className="text-[#A5B4FC] text-sm font-semibold">
+                Total Events
+              </p>
+              <h2 className="text-3xl text-white font-bold mt-2">
+                {stats.total_events}
+              </h2>
+            </div>
+
+            {/* Last Event */}
+            <div className="bg-[#1E293B] p-6 rounded-2xl border border-[#A5B4FC]/30">
+              <p className="text-[#A5B4FC] text-sm font-semibold">
+                Last Created Event
+              </p>
+
+              <h2 className="text-xl text-white font-bold mt-2">
+                {stats.last_event?.name || "No events"}
+              </h2>
+
+              <p className="text-[#94A3B8] text-sm mt-1">
+                {stats.last_event?.created_at
+                  ? new Date(stats.last_event.created_at).toLocaleDateString()
+                  : ""}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* EVENT CARDS GRID */}
         {error && (
           <div className="bg-red-500/10 border-2 border-red-400/50 text-red-300 px-5 py-4 rounded-2xl mb-6 backdrop-blur-sm">
             {error}
